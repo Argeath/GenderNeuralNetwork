@@ -54,8 +54,10 @@ public class Trainer {
     }
 
     public void saveKnowledge() {
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < 2; i++) {
             images[i].saveImage(KnowledgePath + i + ".dat");
+            images[i].saveAsJPG(KnowledgePath + i + ".jpg");
+        }
     }
 
     public boolean loadKnowledge() {
@@ -98,17 +100,19 @@ public class Trainer {
         return list;
     }
 
-    public int predict(Mat mat) {
-        mat = AverageImage.toMedial(mat);
+    public int[] predict(Mat mat) {
+        //mat = AverageImage.toMedial(mat);
 
         double femaleSimilarity = images[FEMALE].compareMat(mat);
         double maleSimilarity = images[MALE].compareMat(mat);
 
-        int diff = (int)((femaleSimilarity - maleSimilarity)*1000);
-        return diff-10;
+//        System.out.println("FEMALE: " + femaleSimilarity);
+//        System.out.println("MALE: " + maleSimilarity);
+
+        return new int[] {(int)(femaleSimilarity*1000), (int)(maleSimilarity*1000)+10};
     }
 
-    int test(String path) {
+    int[] test(String path) {
         Mat mat = Imgcodecs.imread(path, Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
         Imgproc.resize(mat, mat, size);
         return predict(mat);
@@ -125,21 +129,24 @@ public class Trainer {
             trainer.saveKnowledge();
         }
 
-//        trainer.test(TestPath + "female.jpg");
-//        trainer.test(TestPath + "male.jpg");
+//        trainer.test(TestPath + "0.jpg");
+//        trainer.test(TestPath + "1.jpg");
 
         int femaleRight = 0;
         int maleRight = 0;
         String[] females = getFilesOfType(TestPath, "female");
         String[] males = getFilesOfType(TestPath, "male");
+        int[] results;
         for(String s : females) {
-            if(trainer.test(s) > 0)
+            results = trainer.test(s);
+            if(results[0] > results[1])
                 femaleRight++;
         }
         System.out.println("Female right: " + femaleRight + " / " + females.length);
 
         for(String s : males) {
-            if(trainer.test(s) < 0)
+            results = trainer.test(s);
+            if(results[1] > results[0])
                 maleRight++;
         }
         System.out.println("Male right: " + maleRight + " / " + males.length);

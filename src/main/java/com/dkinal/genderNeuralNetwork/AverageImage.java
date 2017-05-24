@@ -1,7 +1,9 @@
 package com.dkinal.genderNeuralNetwork;
 
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.*;
 
@@ -126,6 +128,18 @@ public class AverageImage implements Serializable {
 
     private void setValue(int row, int col, int value) {
         image[row][col] = value;
+    }
+
+    public void saveAsJPG(String path) {
+        Mat img = new Mat(height, width, CvType.CV_8UC1);
+
+        for(int row=0; row < height; row++) {
+            for(int col=0; col < width; col++) {
+                img.put(row, col, getValue(row, col));
+            }
+        }
+
+        Imgcodecs.imwrite(path, img);
     }
 
     public void saveImage(String path) {

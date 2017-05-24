@@ -38,7 +38,7 @@ public class FaceDetector {
 
 		CascadeClassifier cascadeClassifier = new CascadeClassifier(HumanFace4);
 
-		cascadeClassifier.detectMultiScale(matImage, faces, 1.1,10, Objdetect.CASCADE_DO_CANNY_PRUNING, new Size(20, 20),
+		cascadeClassifier.detectMultiScale(matImage, faces, 1.1,3, Objdetect.CASCADE_SCALE_IMAGE, new Size(20, 20),
 				matImage.size());
 
 		return faces.toArray();
@@ -49,7 +49,7 @@ public class FaceDetector {
 	}
 
 	public static void main(String[] args) {
-		String imagePath = "C:\\Users\\admin\\Desktop\\a.png";
+		String imagePath = "src/res/test2.jpg";
 		
 		FaceDetector faceDetector = new FaceDetector();
 		Mat[] mats = faceDetector.snipFace(imagePath, new Size(90, 90));
@@ -58,7 +58,6 @@ public class FaceDetector {
 		for(Mat mat: mats){
 			Imgcodecs.imwrite(imagePath.substring(0, imagePath.length()-4)+"Snipped"+i+imagePath.substring(imagePath.length()-4),
 					mat);
-			
 			i++;
 		}
 	}
