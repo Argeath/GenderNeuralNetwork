@@ -32,8 +32,13 @@ public class Predict {
                 int faceNo = 1;
 
                 for (Mat face : faces) {
-                    Imgproc.cvtColor(face, grayed, Imgproc.COLOR_RGB2GRAY);
-                    int[] prediction = trainer.predict(grayed);
+                    int[] prediction;
+                    if(face.channels() == 1) {
+                        prediction = trainer.predict(face);
+                    }else {
+                        Imgproc.cvtColor(face, grayed, Imgproc.COLOR_RGB2GRAY);
+                        prediction = trainer.predict(grayed);
+                    }
                     String predictionStr = (prediction[0] > prediction[1]) ? "FEMALE" : "MALE";
                     Imgcodecs.imwrite("src/res/test/school/" + index++ + "_" + faceNo + "_" + predictionStr + "_" + prediction[0] + "_" + prediction[1] + ".jpg", grayed);
 
