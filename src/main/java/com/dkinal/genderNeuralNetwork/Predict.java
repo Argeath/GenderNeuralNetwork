@@ -22,19 +22,20 @@ public class Predict {
 
         File[] files = new File("src/res/test/school").listFiles();
         int index = 0;
+        Mat grayed = new Mat(90, 90, CvType.CV_8UC1);
+
 		for(File s : files) {
             String imageFilePath = s.getAbsolutePath();
             try {
                 Mat[] faces = new FaceDetector().snipFace(imageFilePath, new Size(90, 90));
 
                 int faceNo = 1;
-                Mat grayed = new Mat(90, 90, CvType.CV_8UC1);
 
                 for (Mat face : faces) {
                     Imgproc.cvtColor(face, grayed, Imgproc.COLOR_RGB2GRAY);
                     int[] prediction = trainer.predict(grayed);
                     String predictionStr = (prediction[0] > prediction[1]) ? "FEMALE" : "MALE";
-                    Imgcodecs.imwrite("src/res/test/school/" + index++ + "_" + faceNo + "_" + predictionStr + "_" + prediction[0] + "_" + prediction[1] + ".jpg", face);
+                    Imgcodecs.imwrite("src/res/test/school/" + index++ + "_" + faceNo + "_" + predictionStr + "_" + prediction[0] + "_" + prediction[1] + ".jpg", grayed);
 
                     faceNo++;
                 }
